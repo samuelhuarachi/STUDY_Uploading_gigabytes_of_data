@@ -1,14 +1,20 @@
 const url = require("url")
 const UploadHandler = require("./uploadHandler")
-const { pipelineAsync } = require("./util")
-
-
+const { pipelineAsync, logger } = require("./util")
 
 class Routes {
     #io
     
     constructor(io) {
         this.#io = io        
+    }
+
+    async options(request, response) {
+        response.write(204, {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS, POST'
+        })
+        response.end()
     }
 
     async post(request, response) {
@@ -19,9 +25,8 @@ class Routes {
         const uploadHandler = new UploadHandler(this.#io, socketId)
 
 
-        const onFinish = (response, redirectTo) => {
+        const onFinish = (response, redirectTo) => () => {
             response.writeHead(303, {Connection: 'close', Location: `${redirectTo}?msg=File uploaded with success!`})
-
             response.end()
         }
 

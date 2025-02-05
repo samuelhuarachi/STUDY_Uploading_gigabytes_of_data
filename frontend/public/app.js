@@ -57,7 +57,6 @@ const showMessage = () => {
     if(!serverMessage) return;
 
     updateMessage(serverMessage)
-
 }
 
 const configureForm = (targetUrl) => {
